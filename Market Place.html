@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ashwamegh Market - Local Services</title>
+    <style>
+        /* ----- CSS Variables ----- */
+        :root {
+            --primary: #5B4FCF;
+            --primary-dark: #4338CA;
+            --primary-light: #EEF2FF;
+            --success: #10B981;
+            --warning: #F59E0B;
+            --danger: #EF4444;
+            --bg: #F1F5F9;
+            --card: #FFFFFF;
+            --text: #1E293B;
+            --text-muted: #64748B;
+            --border: #E2E8F0;
+            --shadow: 0 4px 24px rgba(91,79,207,0.10);
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        /* ----- HEADER ----- */
+        .market-header {
+            max-width: 900px;
+            margin: 0 auto 24px;
+            background: linear-gradient(135deg, var(--primary) 0%, #764ba2 100%);
+            color: #fff;
+            padding: 24px 28px;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(91,79,207,0.25);
+        }
+        .market-header h1 {
+            font-size: 28px;
+            font-weight: 800;
+            letter-spacing: 1px;
+        }
+        .market-header h1 span {
+            font-weight: 300;
+            opacity: 0.8;
+        }
+        .market-header p {
+            font-size: 14px;
+            opacity: 0.85;
+            margin-top: 4px;
+        }
+
+        /* ----- SEARCH BAR ----- */
+        .search-container {
+            max-width: 900px;
+            margin: 0 auto 20px;
+        }
+        .search-bar {
+            display: flex;
+            gap: 12px;
+            background: var(--card);
+            padding: 6px;
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+        }
+        .search-bar input {
+            flex: 1;
+            padding: 14px 20px;
+            border: none;
+            background: transparent;
+            font-size: 15px;
+            color: var(--text);
+            outline: none;
+        }
+        .search-bar input::placeholder {
+            color: var(--text-muted);
+        }
+        .search-bar button {
+            padding: 12px 28px;
+            background: linear-gradient(135deg, var(--primary), #764ba2);
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            transition: opacity 0.2s;
+            white-space: nowrap;
+        }
+        .search-bar button:hover { opacity: 0.85; }
+
+        .search-stats {
+            font-size: 13px;
+            color: var(--text-muted);
+            padding: 8px 4px 0;
+        }
+        .search-stats strong { color: var(--text); }
+
+        /* ----- GRID ----- */
+        .cards-grid {
+            max-width: 900px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 20px;
+        }
+
+        /* ----- PRODUCT CARD ----- */
+        .product-card {
+            background: var(--card);
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            animation: fadeIn 0.4s ease;
+        }
+        .product-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 12px 36px rgba(91,79,207,0.15);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.96); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        /* Special Badge */
+        .special-badge {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            z-index: 5;
+            background: linear-gradient(135deg, #F59E0B, #EF4444);
+            color: #fff;
+            padding: 4px 14px;
+            border-radius: 30px;
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border: 1px solid rgba(255,255,255,0.3);
+            box-shadow: 0 2px 12px rgba(239,68,68,0.3);
+            pointer-events: none;
+        }
+        .special-badge.verified {
+            background: linear-gradient(135deg, #10B981, #059669);
+            box-shadow: 0 2px 12px rgba(16,185,129,0.3);
+        }
+        .special-badge.popular {
+            background: linear-gradient(135deg, #8B5CF6, #6D28D9);
+            box-shadow: 0 2px 12px rgba(139,92,246,0.3);
+        }
+        .special-badge.new {
+            background: linear-gradient(135deg, #06B6D4, #0891B2);
+            box-shadow: 0 2px 12px rgba(6,182,212,0.3);
+        }
+
+        /* Status Badge */
+        .status-badge {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            z-index: 5;
+            padding: 3px 12px;
+            border-radius: 30px;
+            font-size: 9px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            background: var(--success);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.3);
+            pointer-events: none;
+        }
+        .status-badge.sold { background: var(--danger); }
+        .status-badge.reserved { background: var(--warning); }
+
+        /* Image Slider */
+        .image-slider {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 1/1;
+            background: #f1f5f9;
+            overflow: hidden;
+        }
+        .image-slider img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: opacity 0.4s ease;
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 0;
+        }
+        .image-slider img.active {
+            opacity: 1;
+            position: relative;
+        }
+        .slider-dots {
+            position: absolute;
+            bottom: 8px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 6px;
+            background: rgba(0,0,0,0.3);
+            backdrop-filter: blur(4px);
+            padding: 4px 10px;
+            border-radius: 30px;
+        }
+        .slider-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.4);
+            border: none;
+            cursor: pointer;
+            transition: 0.2s;
+            padding: 0;
+        }
+        .slider-dot.active {
+            background: white;
+            width: 18px;
+            border-radius: 10px;
+        }
+
+        /* Card Content */
+        .card-content {
+            padding: 14px 16px 12px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        .card-category {
+            font-size: 10px;
+            font-weight: 700;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 2px;
+        }
+        .card-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text);
+            line-height: 1.3;
+            display: -webkit-box;
+            -webkit-line-clamp: 1;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .card-desc {
+            font-size: 13px;
+            color: var(--text-muted);
+            line-height: 1.5;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            margin-top: 4px;
+            flex: 1;
+        }
+        .card-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 12px;
+            padding-top: 10px;
+            border-top: 1px solid var(--border);
+        }
+        .card-price {
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--primary);
+        }
+        .whatsapp-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            background: #25D366;
+            color: white;
+            border: none;
+            border-radius: 30px;
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+        }
+        .whatsapp-btn:hover { background: #1ebe5a; }
+        .whatsapp-btn:active { transform: scale(0.95); }
+        .whatsapp-btn svg {
+            width: 18px;
+            height: 18px;
+            fill: white;
+            flex-shrink: 0;
+        }
+
+        /* No Results */
+        .no-results {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-muted);
+        }
+        .no-results h3 { font-size: 20px; color: var(--text); margin-bottom: 6px; }
+        .no-results p { font-size: 14px; }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            .market-header h1 { font-size: 22px; }
+            .search-bar { flex-direction: column; padding: 8px; }
+            .search-bar button { width: 100%; justify-content: center; }
+            .cards-grid { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px; }
+            .card-title { font-size: 14px; }
+            .card-price { font-size: 17px; }
+            .whatsapp-btn { padding: 6px 12px; font-size: 12px; }
+            .whatsapp-btn svg { width: 16px; height: 16px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ===== HEADER ===== -->
+<header class="market-header">
+    <h1>🛒 Ashwamegh <span>Market</span></h1>
+    <p>Local Services & Products — Trusted by Neighbors</p>
+</header>
+
+<!-- ===== SEARCH BAR ===== -->
+<div class="search-container">
+    <div class="search-bar">
+        <input type="text" id="searchInput" placeholder="🔍 Search services, products, or categories..." oninput="filterCards()" />
+        <button onclick="filterCards()">Search</button>
+    </div>
+    <div class="search-stats" id="searchStats">Showing <strong id="resultCount">4</strong> results</div>
+</div>
+
+<!-- ===== CARDS GRID ===== -->
+<div class="cards-grid" id="cardsGrid">
+    <!-- Cards will be rendered by JavaScript -->
+</div>
+
+<script>
+    // ============================================================
+    //  SAMPLE DATA — 4 Local Service Cards
+    // ============================================================
+    const sampleProducts = [
+        {
+            id: 1,
+            title: "Home Plumbing Service",
+            description: "Expert plumbing repair, pipe installation, and bathroom fitting. 24/7 emergency service available.",
+            price: "499",
+            category: "Services",
+            special: "⭐ Verified",
+            specialType: "verified",
+            status: "Available",
+            images: [
+                "https://images.unsplash.com/photo-1585704032916-c2e7b3b3d1a3?w=400&h=400&fit=crop",
+                "https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=400&h=400&fit=crop",
+                "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=400&h=400&fit=crop"
+            ],
+            whatsapp: "919876543210"
+        },
+        {
+            id: 2,
+            title: "Electrician – Home Wiring",
+            description: "Complete electrical solutions: wiring, switchboards, fan installation, and electrical repairs.",
+            price: "350",
+            category: "Services",
+            special: "🔥 Popular",
+            specialType: "popular",
+            status: "Available",
+            images: [
+                "https://images.unsplash.com/photo-1621905251918-48416bd8575a?w=400&h=400&fit=crop",
+                "https://images.unsplash.com/photo-1621905252507-b35492cc74b4?w=400&h=400&fit=crop"
+            ],
+            whatsapp: "919876543211"
+        },
+        {
+            id: 3,
+            title: "AC Repair & Service",
+            description: "All types of AC repair, gas refilling, and annual maintenance contracts. Quick response.",
+            price: "599",
+            category: "Services",
+            special: "🆕 New",
+            specialType: "new",
+            status: "Reserved",
+            images: [
+                "https://images.unsplash.com/photo-1585771724683-4b2f5f0be8c4?w=400&h=400&fit=crop",
+                "https://images.unsplash.com/photo-1585771724683-4b2f5f0be8c4?w=400&h=400&fit=crop"
+            ],
+            whatsapp: "919876543212"
+        },
+        {
+            id: 4,
+            title: "Carpenter – Custom Furniture",
+            description: "Custom furniture design, repair, polishing, and modular kitchen installation.",
+            price: "750",
+            category: "Services",
+            special: "⭐ Verified",
+            specialType: "verified",
+            status: "Available",
+            images: [
+                "https://images.unsplash.com/photo-1583846783214-72219a6c5f3e?w=400&h=400&fit=crop",
+                "https://images.unsplash.com/photo-1583846783214-72219a6c5f3e?w=400&h=400&fit=crop",
+                "https://images.unsplash.com/photo-1583846783214-72219a6c5f3e?w=400&h=400&fit=crop"
+            ],
+            whatsapp: "919876543213"
+        }
+    ];
+
+    // ============================================================
+    //  RENDER CARDS
+    // ============================================================
+    let products = [...sampleProducts];
+    let autoSlideTimers = [];
+
+    function renderCards(filteredProducts) {
+        const grid = document.getElementById('cardsGrid');
+        const count = document.getElementById('resultCount');
+
+        if (!filteredProducts || filteredProducts.length === 0) {
+            grid.innerHTML = `
+                <div class="no-results">
+                    <h3>🔍 No results found</h3>
+                    <p>Try searching with different keywords or browse all services.</p>
+                </div>
+            `;
+            count.textContent = '0';
+            return;
+        }
+
+        count.textContent = filteredProducts.length;
+
+        grid.innerHTML = filteredProducts.map((product, idx) => {
+            const images = product.images && product.images.length ? product.images : [];
+            const dots = images.map((_, i) =>
+                `<button class="slider-dot ${i === 0 ? 'active' : ''}" data-card="${idx}" data-img="${i}"></button>`
+            ).join('');
+
+            const specialClass = product.specialType || '';
+
+            return `
+                <div class="product-card" data-id="${product.id}">
+                    ${product.special ? `<div class="special-badge ${specialClass}">${product.special}</div>` : ''}
+                    ${product.status && product.status !== 'Available' ? `<div class="status-badge ${product.status.toLowerCase()}">${product.status}</div>` : ''}
+
+                    <div class="image-slider" data-card="${idx}">
+                        ${images.map((img, i) =>
+                            `<img src="${img}" class="${i === 0 ? 'active' : ''}" data-imgidx="${i}" loading="lazy" />`
+                        ).join('')}
+                        ${images.length > 1 ? `<div class="slider-dots">${dots}</div>` : ''}
+                    </div>
+
+                    <div class="card-content">
+                        <div class="card-category">${product.category || 'Service'}</div>
+                        <div class="card-title">${product.title}</div>
+                        <div class="card-desc">${product.description}</div>
+                        <div class="card-footer">
+                            <span class="card-price">₹${product.price}</span>
+                            <button class="whatsapp-btn" data-phone="${product.whatsapp || ''}" data-title="${product.title}" data-price="${product.price}">
+                                <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                                Chat Now
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+
+        // ----- Attach Events -----
+        // 1. Slider dots
+        document.querySelectorAll('.slider-dot').forEach(dot => {
+            dot.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const cardIdx = parseInt(this.dataset.card);
+                const imgIdx = parseInt(this.dataset.img);
+                const slider = document.querySelector(`.image-slider[data-card="${cardIdx}"]`);
+                if (!slider) return;
+                const imgs = slider.querySelectorAll('img');
+                imgs.forEach((img, i) => img.classList.toggle('active', i === imgIdx));
+                slider.querySelectorAll('.slider-dot').forEach(d =>
+                    d.classList.toggle('active', parseInt(d.dataset.img) === imgIdx)
+                );
+            });
+        });
+
+        // 2. WhatsApp buttons
+        document.querySelectorAll('.whatsapp-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const phone = this.dataset.phone;
+                const title = this.dataset.title;
+                const price = this.dataset.price;
+                if (!phone) {
+                    alert('Seller contact not available.');
+                    return;
+                }
+                const message = `Hi! I'm interested in your service: ${title} (₹${price}). Is it still available?`;
+                const cleanPhone = phone.replace(/\s/g, '');
+                window.open(`https://wa.me/${cleanPhone}?text=${encodeURIComponent(message)}`, '_blank');
+            });
+        });
+
+        // 3. Auto-slide (per card)
+        // Clear old timers
+        autoSlideTimers.forEach(t => clearInterval(t));
+        autoSlideTimers = [];
+
+        document.querySelectorAll('.image-slider').forEach((slider, cardIdx) => {
+            const imgs = slider.querySelectorAll('img');
+            if (imgs.length <= 1) return;
+
+            const timer = setInterval(() => {
+                let activeIdx = 0;
+                imgs.forEach((img, i) => { if (img.classList.contains('active')) activeIdx = i; });
+                const next = (activeIdx + 1) % imgs.length;
+                imgs.forEach((img, i) => img.classList.toggle('active', i === next));
+                slider.querySelectorAll('.slider-dot').forEach(d =>
+                    d.classList.toggle('active', parseInt(d.dataset.img) === next)
+                );
+            }, 3500);
+
+            autoSlideTimers.push(timer);
+        });
+    }
+
+    // ============================================================
+    //  SEARCH / FILTER
+    // ============================================================
+    function filterCards() {
+        const query = document.getElementById('searchInput').value.toLowerCase().trim();
+
+        if (!query) {
+            renderCards(products);
+            return;
+        }
+
+        const filtered = products.filter(p => {
+            const searchable = [
+                p.title,
+                p.description,
+                p.category,
+                p.special || '',
+                p.status || ''
+            ].join(' ').toLowerCase();
+            return searchable.includes(query);
+        });
+
+        renderCards(filtered);
+    }
+
+    // ============================================================
+    //  INIT
+    // ============================================================
+    document.addEventListener('DOMContentLoaded', function() {
+        renderCards(products);
+    });
+</script>
+
+</body>
+</html>
